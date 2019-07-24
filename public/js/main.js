@@ -83,8 +83,7 @@ class playGame extends Phaser.Scene {
         this.platforms = this.physics.add.group({
             allowGravity: false,
             immovable: true,
-            // velocityY: -150
-            velocityY: 0
+            velocityY: -150
         });
 
         // Adds player
@@ -157,7 +156,6 @@ class playGame extends Phaser.Scene {
 
         // Toggles mute
         this.spacebar.on('down', (event) => {
-            console.log('space');
             this.toggleMute();
         });
 
