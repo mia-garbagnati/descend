@@ -125,19 +125,19 @@ class playGame extends Phaser.Scene {
         }
 
         // Deletes offscreen platforms
-        this.platforms.children.each(function(element) {
+        this.platforms.children.each( (element) => {
             if(element.y < 0) {
                 element.destroy();
             }
         });
 
         // Adds points to score when passing through platforms
-        this.platforms.children.each(function(platform) {
+        this.platforms.children.each( (platform) => {
             this.scoreText.setText('Score: ' + this.score.toString());
             if (!platform.scored && platform.y <= this.player.y) {
                 this.increaseScore(platform);
             }
-        }.bind(this))
+        });
 
         // Ends game
         if (this.player.y < 25) {
