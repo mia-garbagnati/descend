@@ -9,7 +9,7 @@ window.onload = function () {
                 gravity: { y: 1000 }
             }
         },
-        scene: [preloadGame, titleScreen, playGame]
+        scene: [preloadGame, titleScreen, playGame, pause]
         // scene: [preloadGame, playGame] // Switch this for line above if using without title screen
     };
 
@@ -24,7 +24,7 @@ class preloadGame extends Phaser.Scene {
     preload() {
         // Loads spritesheet and image
         this.load.spritesheet('ball', 'assets/sprites/pie-ball.png', { frameWidth: 53, frameHeight: 53 });
-        this.load.spritesheet('soundToggle', 'assets/sprites/sound_toggle.png', { frameWidth: 31, frameHeight: 31 });
+        this.load.spritesheet('soundToggle', 'assets/sprites/sound-toggle.png', { frameWidth: 31, frameHeight: 31 });
         this.load.image('platform', 'assets/sprites/bar.png');
 
         // Loads sound effects
@@ -73,6 +73,35 @@ class titleScreen extends Phaser.Scene {
     }
 }
 
+// Pause
+class pause extends Phaser.Scene {
+    constructor() {
+        super("Pause");
+    }
+
+    preload() {
+        // Loads pause screen 
+        this.load.image('pause', 'assets/sprites/pause-screen.png');
+    }
+
+    create() {
+        // Adds pause screen
+        let pause = this.add.sprite(300, 300, 'pause');
+
+        // Adds listener to space key
+        let spacebar = this.input.keyboard.addKey('SPACE');
+
+        // Resumes game
+        this.input.keyboard.on(spacebar, () => {
+            this.scene.stop();
+            this.scene.resume('PlayGame');
+        });
+    }
+
+    update() {
+    }
+}
+
 class playGame extends Phaser.Scene {
     constructor() {
         super("PlayGame");
@@ -113,6 +142,15 @@ class playGame extends Phaser.Scene {
         this.score = 0; // Sets initial score to 0 
         this.scoreText = this.add.text(10, 580); // Adds text to screen
         this.scoreText.setDepth(1000); // Z-index for score text
+
+        // Adds listener to space key
+        let spacebar = this.input.keyboard.addKey('SPACE');
+
+        // Pauses game and switches scenes
+        this.input.keyboard.on(spacebar, () => {
+            this.scene.pause();
+            this.scene.launch('Pause');
+        });
     }
 
     update() {
