@@ -10,7 +10,7 @@ window.onload = function () {
             }
         },
         scene: [preloadGame, titleScreen, playGame]
-        // scene: [preloadGame, playGame]
+        // scene: [preloadGame, playGame] // Switch this for line above if using without title screen
     };
 
     game = new Phaser.Game(config);
@@ -26,7 +26,7 @@ class preloadGame extends Phaser.Scene {
         this.load.spritesheet('ball', 'assets/sprites/pie-ball.png', { frameWidth: 53, frameHeight: 53 });
         this.load.image('platform', 'assets/sprites/bar.png');
 
-        // Adds sound effects
+        // Loads sound effects
         this.load.audio('addPoint', 'assets/sounds/add_point.mp3');
         this.load.audio('lose', 'assets/sounds/lose.mp3');
     }
@@ -41,26 +41,32 @@ class preloadGame extends Phaser.Scene {
         });
 
         // this.scene.start("PlayGame");
-        this.scene.start("TitleScreen");
+        this.scene.start("TitleScreen"); // Switch this for line above if using without title screen
     }
 }
 
+// Remove this class if playing without title screen
 class titleScreen extends Phaser.Scene {
     constructor() {
         super("TitleScreen");
     }
 
     preload() {
+        // Loads title screen 
         this.load.image('start', 'assets/sprites/start-screen.png');
     }
 
     create() {
+        // Adds title screen
         this.title = this.add.sprite(300, 300, 'start');
+
+        // Adds space key
         this.spacebar = this.input.keyboard.addKey('SPACE');
     }
 
     update() {
         if (this.spacebar.isDown) {
+            // Starts game
             this.scene.start('PlayGame');
         }
     }
@@ -72,7 +78,7 @@ class playGame extends Phaser.Scene {
     }
 
     create() {
-        // Platform group and platform movement
+        // Creates platform group and platform movement
         this.platforms = this.physics.add.group({
             allowGravity: false,
             immovable: true,
@@ -82,6 +88,7 @@ class playGame extends Phaser.Scene {
         // Adds player
         this.player = this.physics.add.sprite(300, 60, 'ball');
 
+        // Confines player to world bounds
         this.player.setCollideWorldBounds(true);
 
         // Adds collider to player and platforms
@@ -96,16 +103,19 @@ class playGame extends Phaser.Scene {
         });
         this.addPlatforms();
 
-        // Sets initial score to 0
+        // Sets initial score to 0 and adds text to screen
         this.score = 0;
         this.scoreText = this.add.text(10, 580);
-        this.scoreText.setDepth(1000);
+        this.scoreText.setDepth(1000); // Z-index for score text
     }
 
     addPlatforms() {
+        // Randomly generates X position of first bar
         this.posX1 = Math.floor(Math.random() * (200 - -200 + 1)) + -200;
+        // Positions additional bar 50px to the right of the first bar
         this.posX2 = this.posX1 + 690;
 
+        // Places platforms on screen, below game view
         this.platforms.create(this.posX1, 620, 'platform');
         this.platforms.create(this.posX2, 620, 'platform');
     }
@@ -125,7 +135,6 @@ class playGame extends Phaser.Scene {
         } else {
             this.player.setVelocityX(0)
             this.player.anims.stop();
-
         }
 
         // Deletes offscreen platforms
@@ -155,7 +164,7 @@ class playGame extends Phaser.Scene {
 
         // Adds point
         platform.scored = true;
-        this.score += 0.5; 
+        this.score += 0.5; // Each platform is two separate bars, so passing 1 platform is (0.5 * 2) bars
         this.scoreText.setText('Score: ' + this.score.toString());
     }
 
@@ -167,7 +176,9 @@ class playGame extends Phaser.Scene {
         // this.scene.start("PlayGame");
 
         // Returns to title screen
-        this.scene.start("TitleScreen");
-        // this.scene.destroy(true);
+        this.scene.start("TitleScreen"); // Switch this with line 173 if playing without title screen
+
+        // Destroys game instance
+        // this.scene.destroy(true); // Not sure if necessary for this iteration of the game, but potentially useful
     }
 }
