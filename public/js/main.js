@@ -24,6 +24,7 @@ class preloadGame extends Phaser.Scene {
     preload() {
         // Loads spritesheet and image
         this.load.spritesheet('ball', 'assets/sprites/pie-ball.png', { frameWidth: 53, frameHeight: 53 });
+        this.load.spritesheet('soundToggle', 'assets/sprites/sound_toggle.png', { frameWidth: 31, frameHeight: 31 });
         this.load.image('platform', 'assets/sprites/bar.png');
 
         // Loads sound effects
@@ -101,6 +102,13 @@ class playGame extends Phaser.Scene {
         });
         this.addPlatforms();
 
+        // Adds mute button
+        this.soundToggler = this.physics.add.sprite(575, 580, 'soundToggle');
+        this.soundToggler.body.setAllowGravity(false); // Disables gravity
+        this.soundToggler.setDepth(1000); // Z-index for mute icon
+        this.soundToggler.setInteractive(); // Makes interactive to allow pointerdown event on line below
+        this.soundToggler.on('pointerdown', () => this.toggleMute());
+
         // Creates score
         this.score = 0; // Sets initial score to 0 
         this.scoreText = this.add.text(10, 580); // Adds text to screen
@@ -125,19 +133,19 @@ class playGame extends Phaser.Scene {
         }
 
         // Deletes offscreen platforms
-        this.platforms.children.each(function(element) {
+        this.platforms.children.each( (element) => {
             if(element.y < 0) {
                 element.destroy();
             }
         });
 
         // Adds points to score when passing through platforms
-        this.platforms.children.each(function(platform) {
+        this.platforms.children.each( (platform) => {
             this.scoreText.setText('Score: ' + this.score.toString());
             if (!platform.scored && platform.y <= this.player.y) {
                 this.increaseScore(platform);
             }
-        }.bind(this))
+        });
 
         // Ends game
         if (this.player.y < 25) {
@@ -154,6 +162,16 @@ class playGame extends Phaser.Scene {
         this.platforms.create(posX2, 620, 'platform');
     }
 
+    toggleMute() {
+        if (!this.game.sound.mute && !this.mute) {
+            this.game.sound.mute = true;
+            this.soundToggler.setFrame(1);
+        } else {
+            this.game.sound.mute = false;
+            this.soundToggler.setFrame(0);
+        }
+    }
+
     increaseScore(platform) {
         // Sound effect
         this.sound.play('addPoint');
@@ -166,7 +184,12 @@ class playGame extends Phaser.Scene {
 
     killPlayer() {
         // Sound effect
-        this.sound.play('lose');
+        if (!this.game.sound.mute) {
+            this.sound.play('lose');
+        }
+
+        // Revert mute status to default
+        this.game.sound.mute = false;
 
         // Restarts Game
         // this.scene.start("PlayGame");
