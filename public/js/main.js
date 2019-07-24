@@ -13,7 +13,7 @@ window.onload = function () {
         // scene: [preloadGame, playGame] // Switch this for line above if using without title screen
     };
 
-    game = new Phaser.Game(config);
+    let game = new Phaser.Game(config);
 }
 
 class preloadGame extends Phaser.Scene {
@@ -58,7 +58,7 @@ class titleScreen extends Phaser.Scene {
 
     create() {
         // Adds title screen
-        this.title = this.add.sprite(300, 300, 'start');
+        let title = this.add.sprite(300, 300, 'start');
 
         // Adds space key
         this.spacebar = this.input.keyboard.addKey('SPACE');
@@ -87,15 +87,13 @@ class playGame extends Phaser.Scene {
 
         // Adds player
         this.player = this.physics.add.sprite(300, 60, 'ball');
-
-        // Confines player to world bounds
-        this.player.setCollideWorldBounds(true);
+        this.player.setCollideWorldBounds(true); // Confines player to world bounds
 
         // Adds collider to player and platforms
         this.physics.add.collider(this.player, this.platforms);
 
         // Adds platforms
-        this.platformCreator = this.time.addEvent({
+        let platformCreator = this.time.addEvent({
             delay: 1000,
             callback: this.addPlatforms,
             callbackScope: this,
@@ -109,26 +107,15 @@ class playGame extends Phaser.Scene {
         this.scoreText.setDepth(1000); // Z-index for score text
     }
 
-    addPlatforms() {
-        // Randomly generates X position of first bar
-        this.posX1 = Math.floor(Math.random() * (200 - -200 + 1)) + -200;
-        // Positions additional bar 50px to the right of the first bar
-        this.posX2 = this.posX1 + 690;
-
-        // Places platforms on screen, below game view
-        this.platforms.create(this.posX1, 620, 'platform');
-        this.platforms.create(this.posX2, 620, 'platform');
-    }
-
     update() {
         // Adds keyboard movement and animations (left/right)
-        this.cursors = this.input.keyboard.createCursorKeys();
+        let cursors = this.input.keyboard.createCursorKeys();
 
-        if (this.cursors.left.isDown) {
+        if (cursors.left.isDown) {
             this.player.setVelocityX(-200);
             this.player.flipX = true;
             this.player.anims.play('roll', true);
-        } else if (this.cursors.right.isDown) {
+        } else if (cursors.right.isDown) {
             this.player.setVelocityX(200);
             this.player.flipX = false;
             this.player.anims.play('roll', true);
@@ -156,6 +143,15 @@ class playGame extends Phaser.Scene {
         if (this.player.y < 25) {
             this.killPlayer();
         }
+    }
+
+    addPlatforms() {
+        let posX1 = Math.floor(Math.random() * (200 - -200 + 1)) + -200; // Randomly generates X position of first bar
+        let posX2 = posX1 + 690; // Positions additional bar 50px to the right of the first bar
+
+        // Places platforms on screen, below game view
+        this.platforms.create(posX1, 620, 'platform');
+        this.platforms.create(posX2, 620, 'platform');
     }
 
     increaseScore(platform) {
