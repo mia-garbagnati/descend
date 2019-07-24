@@ -83,7 +83,8 @@ class playGame extends Phaser.Scene {
         this.platforms = this.physics.add.group({
             allowGravity: false,
             immovable: true,
-            velocityY: -150
+            // velocityY: -150
+            velocityY: 0
         });
 
         // Adds player
@@ -106,12 +107,19 @@ class playGame extends Phaser.Scene {
         this.soundToggler = this.physics.add.sprite(575, 580, 'soundToggle');
         this.soundToggler.body.setAllowGravity(false); // Disables gravity
         this.soundToggler.setDepth(1000); // Z-index for mute icon
-        this.soundToggler.setInteractive(); // Makes interactive to allow pointerdown event on line below
-        this.soundToggler.on('pointerdown', () => this.toggleMute());
+
+        // Adds listener to space bar for sound toggling
+        this.spacebar = this.input.keyboard.addKey('SPACE'); 
+
+        // Adds text for sound toggling
+        this.spaceText = this.add.text(440, 573);
+        this.spaceText
+            .setText('Press Space: ')
+            .setDepth(1000);
 
         // Creates score
         this.score = 0; // Sets initial score to 0 
-        this.scoreText = this.add.text(10, 580); // Adds text to screen
+        this.scoreText = this.add.text(10, 573); // Adds text to screen
         this.scoreText.setDepth(1000); // Z-index for score text
     }
 
@@ -145,6 +153,12 @@ class playGame extends Phaser.Scene {
             if (!platform.scored && platform.y <= this.player.y) {
                 this.increaseScore(platform);
             }
+        });
+
+        // Toggles mute
+        this.spacebar.on('down', (event) => {
+            console.log('space');
+            this.toggleMute();
         });
 
         // Ends game
