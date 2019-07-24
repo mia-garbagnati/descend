@@ -24,11 +24,11 @@ class preloadGame extends Phaser.Scene {
     preload() {
         // Loads spritesheet and image
         this.load.spritesheet('ball', 'assets/sprites/pie-ball.png', { frameWidth: 53, frameHeight: 53 });
-        this.load.spritesheet('soundToggle', 'assets/sprites/sound_toggle.png', { frameWidth: 31, frameHeight: 31 });
+        this.load.spritesheet('soundToggle', 'assets/sprites/sound-toggle.png', { frameWidth: 32, frameHeight: 32 });
         this.load.image('platform', 'assets/sprites/bar.png');
 
         // Loads sound effects
-        this.load.audio('addPoint', 'assets/sounds/add_point.mp3');
+        this.load.audio('addPoint', 'assets/sounds/add-point.mp3');
         this.load.audio('lose', 'assets/sounds/lose.mp3');
     }
 
