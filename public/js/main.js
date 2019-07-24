@@ -108,7 +108,6 @@ class playGame extends Phaser.Scene {
         this.soundToggler.setDepth(1000); // Z-index for mute icon
         this.soundToggler.setInteractive(); // Makes interactive to allow pointerdown event on line below
         this.soundToggler.on('pointerdown', () => this.toggleMute());
-        this.mute = false; // default to mute off
 
         // Creates score
         this.score = 0; // Sets initial score to 0 
@@ -166,11 +165,9 @@ class playGame extends Phaser.Scene {
     toggleMute() {
         if (!this.game.sound.mute && !this.mute) {
             this.game.sound.mute = true;
-            this.mute = true;
             this.soundToggler.setFrame(1);
         } else {
             this.game.sound.mute = false;
-            this.mute = false;
             this.soundToggler.setFrame(0);
         }
     }
@@ -187,13 +184,12 @@ class playGame extends Phaser.Scene {
 
     killPlayer() {
         // Sound effect
-        if (!this.mute) {
+        if (!this.game.sound.mute) {
             this.sound.play('lose');
         }
 
         // Revert mute status to default
         this.game.sound.mute = false;
-        this.mute = false;
 
         // Restarts Game
         // this.scene.start("PlayGame");
