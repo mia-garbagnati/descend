@@ -41,7 +41,7 @@ class preloadGame extends Phaser.Scene {
         });
 
         // this.scene.start("PlayGame");
-        this.scene.start("TitleScreen"); // Switch this for line above if using without title screen
+        this.scene.start("TitleScreen"); // Switch this for line above if playing without title screen
     }
 }
 
@@ -101,9 +101,9 @@ class playGame extends Phaser.Scene {
         });
         this.addPlatforms();
 
-        // Sets initial score to 0 and adds text to screen
-        this.score = 0;
-        this.scoreText = this.add.text(10, 580);
+        // Creates score
+        this.score = 0; // Sets initial score to 0 
+        this.scoreText = this.add.text(10, 580); // Adds text to screen
         this.scoreText.setDepth(1000); // Z-index for score text
     }
 
@@ -131,7 +131,7 @@ class playGame extends Phaser.Scene {
             }
         });
 
-        // Keeps track of score
+        // Adds points to score when passing through platforms
         this.platforms.children.each(function(platform) {
             this.scoreText.setText('Score: ' + this.score.toString());
             if (!platform.scored && platform.y <= this.player.y) {
@@ -149,7 +149,7 @@ class playGame extends Phaser.Scene {
         let posX1 = Math.floor(Math.random() * (200 - -200 + 1)) + -200; // Randomly generates X position of first bar
         let posX2 = posX1 + 690; // Positions additional bar 50px to the right of the first bar
 
-        // Places platforms on screen, below game view
+        // Places platforms on screen below game view
         this.platforms.create(posX1, 620, 'platform');
         this.platforms.create(posX2, 620, 'platform');
     }
